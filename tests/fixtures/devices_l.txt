@@ -1,0 +1,2 @@
+List of devices attached
+KBYD9DJJJRVCVCI7       device product:aristotle_eea model:2306EPN60G device:aristotle transport_id:18

@@ -1,0 +1,9 @@
+[project]
+name = "pristupny-ovladac"
+version = "0.1.0"
+description = "Přístupný vzdálený ovladač Androidu – Etapa 1: ADB jádro (read-only)"
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.setuptools.packages.find]
+include = ["ovladac*"]

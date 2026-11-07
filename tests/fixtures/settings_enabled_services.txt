@@ -1,0 +1,1 @@
+com.google.android.accessibility.reader/.ReaderService:com.google.android.marvin.talkback/com.google.android.accessibility.selecttospeak.SelectToSpeakService

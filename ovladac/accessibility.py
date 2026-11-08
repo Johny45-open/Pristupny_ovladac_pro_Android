@@ -143,6 +143,18 @@ class AccessibilityState:
     def reader_service_enabled(self) -> bool:
         return READER_COMPONENT in self.enabled_services
 
+    @property
+    def reader_service_crashed(self) -> bool:
+        return READER_COMPONENT in self.crashed_services
+
+    @property
+    def select_to_speak_crashed(self) -> bool:
+        return SELECT_TO_SPEAK_COMPONENT in self.crashed_services
+
+    @property
+    def talkback_crashed(self) -> bool:
+        return TALKBACK_COMPONENT in self.crashed_services
+
 
 def parse_dumpsys_accessibility(text: str) -> AccessibilityState:
     """Zparsuje relevantní řádky z výstupu `dumpsys accessibility`."""

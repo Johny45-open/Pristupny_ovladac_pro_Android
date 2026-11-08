@@ -1,9 +1,12 @@
 [project]
 name = "pristupny-ovladac"
-version = "0.1.0"
-description = "Přístupný vzdálený ovladač Androidu – Etapa 1: ADB jádro (read-only)"
+version = "0.2.0"
+description = "Přístupný vzdálený ovladač Androidu – Etapa 1/2A: ADB jádro a PyQt6 GUI (read-only)"
 requires-python = ">=3.13"
 dependencies = []
+
+[project.optional-dependencies]
+gui = ["PyQt6>=6.11"]
 
 [tool.setuptools.packages.find]
 include = ["ovladac*"]

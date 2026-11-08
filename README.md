@@ -1,11 +1,15 @@
 # Přístupný vzdálený ovladač Androidu
 
 Projekt přístupné Windows aplikace pro kompletní ovládání Android telefonu
-klávesnicí, bez nutnosti sledovat displej. Aktuální stav: **Etapa 1 – ADB jádro
-(read-only)**.
+klávesnicí, bez nutnosti sledovat displej. Aktuální stav: **Etapa 2A –
+diagnostické GUI (PyQt6, read-only) + ADB jádro (Etapa 1)**.
 
 ## Co umí tato verze
 
+- **Diagnostické GUI** (`python main.py`): výběr zařízení, spuštění
+  read-only diagnostiky, výsledek ve dvou přístupných tabulkách.
+  Vytvořeno výhradně ze standardních widgetů pro čtečku obrazovky (NVDA),
+  explicitní pořadí fokusu klávesou Tab, Escape v hlavním okně nic nezavírá.
 - Detekce připojeného zařízení přes ADB (`adb devices -l`).
 - Čtení identifikace telefonu (model, Android, HyperOS, build, ABI).
 - Čtení stavu přístupnosti (TalkBack, Select to Speak, Reading mode,
@@ -13,13 +17,54 @@ klávesnicí, bez nutnosti sledovat displej. Aktuální stav: **Etapa 1 – ADB 
 - Bezpečnostní whitelist: příkazy, které mění stav telefonu, jsou odmítnuty
   **dřív**, než se cokoliv spustí (`ovladac/safety.py`).
 
-Neumí ještě: GUI, ovládání prvků, změny nastavení – to jsou další etapy.
+Neumí ještě: ovládání prvků telefonu, změny nastavení – to jsou další etapy
+(Etapa 2B a později). GUI je read-only, jako celé jádro.
 
 ## Požadavky
 
-- Windows 11, Python 3.13 (stačí čistý Python, žádné závislosti se neinstalují).
+- Windows 11, Python 3.13.
+- Jádro (CLI) nemá žádné závislosti. GUI navíc vyžaduje PyQt6:
+  `pip install .[gui]`.
 - Android Platform Tools (`adb` v PATH) – ověř příkazem `adb version`.
 - Zapnuté USB ladění v telefonu a potvrzený RSA dialog při prvním připojení.
+
+## Spuštění GUI (Etapa 2A)
+
+```powershell
+pip install .[gui]
+python main.py
+```
+
+Okno se otevře, automaticky načte seznam zařízení a při jediném připojeném
+telefonu sám vybere. Tlačítko **Spustit diagnostiku** provede read-only
+diagnostiku; výsledek se čte ve tabulkách (řádky se přepínají šipkami
+nahoru/dolů, hodnoty ve druhém sloupci). Tlačítko **Obnovit seznam** zopakuje
+sken. Zavírá se standardně (Alt+F4); během běhu diagnostiky se zavření
+pozastaví, dokud se probíhající (read-only) příkazy dokončí.
+
+### Ruční testovací protokol pro NVDA
+
+Ověření čistě klávesnicí, bez sledování obrazovky:
+
+1. **Otevření:** spusť NVDA, poté `python main.py`. NVDA má oznámit titul
+   okna „Přístupný ovladač Androidu – diagnostika“ a současně má focus být
+   na combo **Zařízení** (nebo na prvním prvku v pořadí).
+2. **Vyjmenování zařízení:** na combo stiskni šipku dolů – NVDA přečte
+   každý připojený telefon (serial + stav).
+3. **Pořadí fokusu:** Tabem projdi: Zařízení → Obnovit seznam → Spustit
+   diagnostiku → tabulka Identifikace → tabulka Služby přístupnosti.
+   Pořadí musí být přesně toto, bez přeskakování.
+4. **Escape:** stiskni Escape – okno se **nesmí** zavřít (Escape v hlavním
+   okně nic nedělá; dialogy by zavřel).
+5. **Diagnostika:** na tlačítku Spustit stiskni Enter. Stavová lišta má
+   přečíst „Zpracovávám…“. Po dokončení fokus přejde na první řádek tabulky
+   Identifikace (pokud čekal na tlačítku).
+6. **Řádky tabulek:** šipky nahoru/dolů projdou všechny řádky; každý řádek
+   má přístupný popisek (názvový sloupec) i hodnotu (sloupec Stav).
+7. **Obnovit:** Tab na tlačítko Obnovit seznam, Enter – sken se opakuje
+   a výběr zařízení se obnoví.
+8. **Zavření:** Alt+F4. Pokud běží úloha, okno se zavře až po jejím
+   dokončení (bez dialogu „zrušeno“ – zrušení není chybou).
 
 ## První spuštění diagnostiky
 
